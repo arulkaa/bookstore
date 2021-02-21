@@ -24,7 +24,7 @@ class CreateBook extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:books',
+            'title' => 'required|unique:books',
             'description' => 'required',
             'cover' => 'required|image'
         ];

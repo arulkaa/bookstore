@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Book\CreateBook;
+use App\Models\Book;
 use Illuminate\Http\Request;
+
 
 class BookController extends Controller
 {
@@ -14,7 +16,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        return view('books.index');
+        return view('books.index')->with('books', Book::all());
     }
 
     /**
@@ -45,7 +47,7 @@ class BookController extends Controller
 
         session()->flash('successGenre', 'Book created successfully.');
 
-        return redirect()->route('books.index');
+        return redirect(route('books.index'));
     }
 
     /**
@@ -88,8 +90,13 @@ class BookController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Book $book)
     {
-        //
+
+        $book->delete();
+
+        session()->flash('successGenre', 'Book trashed successfully.');
+
+        return redirect(route('books.index'));
     }
 }
