@@ -31,7 +31,7 @@
                            value="{{ isset($genre) ? $genre->name : '' }}">
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-success">{{ isset($genre) ? 'Update Genre' : 'Add Genre' }}</button>
+                    <button class="btn btn-success" type="submit">{{ isset($genre) ? 'Update Genre' : 'Add Genre' }}</button>
                 </div>
             </form>
         </div>
