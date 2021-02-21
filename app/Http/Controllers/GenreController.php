@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Genre\UpdateGenre;
+use App\Http\Requests\Genre\CreateGenre;
+use App\Models\Genre;
 
 class GenreController extends Controller
 {
@@ -13,7 +15,8 @@ class GenreController extends Controller
      */
     public function index()
     {
-        return view('genres.index');
+        $genres = Genre::orderBy('name', 'asc')->get();
+        return view('genres.index', compact('genres'));
     }
 
     /**
@@ -29,18 +32,24 @@ class GenreController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateGenre $request)
     {
-        //
+        Genre::create([
+            'name' => $request->name
+        ]);
+
+        session()->flash('successGenre', 'Genre created successfully.');
+
+        return redirect(route('genres.index'));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -51,34 +60,44 @@ class GenreController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Genre $genre)
     {
-        //
+        return view('genres.create')->with('genre', $genre);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateGenre $request, Genre $genre)
     {
-        //
+        $genre->update([
+            'name' => $request->name
+        ]);
+
+        session()->flash('successGenre', 'Genre updated successfully.');
+
+        return redirect(route('genres.index'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Genre $genre)
     {
-        //
+        $genre->delete();
+
+        session()->flash('successGenre', 'Genre deleted successfully.');
+
+        return redirect(route('genres.index'));
     }
 }

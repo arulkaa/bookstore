@@ -3,18 +3,35 @@
 @section('content')
     <div class="row">
         <div class="col-md-6">
-            <h1>Add Genre</h1>
+            <h1>{{ isset($genre) ? 'Edit Genre' : 'Add New Genre' }}</h1>
         </div>
     </div>
     <div class="card card-default">
         <div class="card-body">
-            <form action="">
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="list-group">
+                        @foreach($errors->all() as $error)
+                            <li class="list-group-item text-danger">
+                                {{ $error }}
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <form action="{{ isset($genre) ? route('genres.update', $genre->id) : route('genres.store') }}"
+                  method="post">
+                @csrf
+                @if(isset($genre))
+                    @method('put')
+                @endif
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" id="name" class="form-control" name="name" placeholder="Write new genre">
+                    <input type="text" id="name" class="form-control" name="name" placeholder="Write new genre"
+                           value="{{ isset($genre) ? $genre->name : '' }}">
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-success">Add Genre</button>
+                    <button class="btn btn-success">{{ isset($genre) ? 'Update Genre' : 'Add Genre' }}</button>
                 </div>
             </form>
         </div>

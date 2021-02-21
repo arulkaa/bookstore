@@ -81,6 +81,11 @@
     <main class="py-4">
         @auth
             <div class="container">
+                @if(session()->has('successGenre'))
+                    <div class="alert alert-success">
+                        {{ session()->get('successGenre') }}
+                    </div>
+                @endif
                 <div class="row">
                     <div class="col-md-4">
                         <ul class="list-group">
@@ -102,5 +107,11 @@
         @endauth
     </main>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+@yield('scripts')
+
 </body>
 </html>
