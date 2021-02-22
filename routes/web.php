@@ -25,3 +25,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::resource('genres', GenreController::class);
 Route::resource('books', BookController::class);
+
+Route::get('trashed-books', [BookController::class, 'trashed'])->name('trashed-books.index');

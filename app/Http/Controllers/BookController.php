@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Book\CreateBook;
+use App\Http\Requests\Book\UpdateBook;
 use App\Models\Book;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 
 class BookController extends Controller
@@ -47,7 +48,7 @@ class BookController extends Controller
 
         session()->flash('successGenre', 'Book created successfully.');
 
-        return redirect(route('books.index'));
+        return redirect()->route('books.index');
     }
 
     /**
@@ -67,9 +68,9 @@ class BookController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Book $book)
     {
-        //
+        return view('books.create')->with('book', $book);
     }
 
     /**
@@ -79,9 +80,22 @@ class BookController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateBook $request, Book $book)
     {
-        //
+        $data = $request->only(['title', 'description']);
+
+        if ($request->hasFile('cover')) {
+            $cover = $request->cover->store('books');
+
+            Storage::delete($book->cover);
+
+            $data['cover'] = $cover;
+        }
+            $book->update($data);
+
+            session()->flash('successGenre', 'Book updated successfully.');
+
+            return redirect()->route('books.index');
     }
 
     /**
@@ -90,13 +104,28 @@ class BookController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Book $book)
+    public function destroy($id)
     {
+        $book = Book::withTrashed()->where('id', $id)->firstOrFail();
 
-        $book->delete();
+        if ($book->trashed()) {
 
-        session()->flash('successGenre', 'Book trashed successfully.');
+            Storage::delete($book->cover);
 
-        return redirect(route('books.index'));
+            $book->forceDelete();
+        } else {
+            $book->delete();
+        }
+
+        session()->flash('successGenre', 'Book deleted successfully.');
+
+        return redirect()->route('books.index');
+    }
+
+    public function trashed()
+    {
+        $trashed = Book::onlyTrashed()->get();
+
+        return view('books.index')->with('books', $trashed);
     }
 }

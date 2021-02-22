@@ -13,37 +13,46 @@
     </div>
     <div class="card card-default">
         <div class="card-body">
-            <table class="table">
-                <thead>
-                <th>Cover</th>
-                <th>Title</th>
-                <th></th>
-                <th></th>
-                </thead>
-                <tbody>
-                @foreach($books as $book)
-                    <tr>
-                        <td>
-                            <img src="{{ asset('storage/'.$book->cover) }}" class="thumbnail" alt="{{ $book->title }}">
-                        </td>
-                        <td>
-                            {{ $book->title }}
-                        </td>
-                        <td>
-                            <a href="" class="btn btn-outline-info btn-sm">Edit</a>
-                        </td>
-                        <td>
-                            <form action="{{ route('books.destroy', $book->id) }}" method="post">
-                                @csrf
-                                @method('delete')
+            @if($books->count()>0)
+                <table class="table">
+                    <thead>
+                    <th>Cover</th>
+                    <th>Title</th>
+                    <th></th>
+                    <th></th>
+                    </thead>
+                    <tbody>
+                    @foreach($books as $book)
+                        <tr>
+                            <td>
+                                <img src="{{ asset('storage/'.$book->cover) }}" class="thumbnail"
+                                     alt="{{ $book->title }}">
+                            </td>
+                            <td>
+                                {{ $book->title }}
+                            </td>
+                            @if(!$book->trashed())
+                                <td>
+                                    <a href="{{ route('books.edit', $book->id) }}" class="btn btn-outline-info btn-sm">Edit</a>
+                                </td>
+                            @endif
+                            <td>
+                                <form action="{{ route('books.destroy', $book->id) }}" method="post">
+                                    @csrf
+                                    @method('delete')
 
-                                <button type="submit" class="btn btn-outline-danger btn-sm">Trash</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        {{ $book->trashed() ? 'Delete' : 'Trash' }}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p class="text-center">No Books Yet</p>
+            @endif
         </div>
     </div>
 @endsection

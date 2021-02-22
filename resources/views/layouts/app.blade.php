@@ -9,9 +9,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -96,6 +93,11 @@
                                 <a href="{{ route('genres.index') }}">Genres</a>
                             </li>
                         </ul>
+                        <ul class="list-group mt-5">
+                            <li class="list-group-item">
+                                <a href="{{ route('trashed-books.index') }}">Trashed Books</a>
+                            </li>
+                        </ul>
                     </div>
                     <div class="col-md-8">
                         @yield('content')
@@ -108,8 +110,8 @@
     </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<!-- Scripts -->
+<script src="{{ asset('js/app.js') }}"></script>
 
 @yield('scripts')
 
