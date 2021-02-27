@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Book;
+namespace App\Http\Requests\Author;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateBook extends FormRequest
+class UpdateAuthor extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,7 @@ class UpdateBook extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
-            'description' => 'required',
-            'genre' => 'required'
+            'name' => 'required|unique:authors'
         ];
     }
 }

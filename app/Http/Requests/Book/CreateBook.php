@@ -26,7 +26,8 @@ class CreateBook extends FormRequest
         return [
             'title' => 'required|unique:books',
             'description' => 'required',
-            'cover' => 'required|image'
+            'cover' => 'required|image',
+            'genre' => 'required'
         ];
     }
 }

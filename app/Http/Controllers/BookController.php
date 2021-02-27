@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Book\CreateBook;
 use App\Http\Requests\Book\UpdateBook;
+use App\Models\Author;
 use App\Models\Book;
-use Illuminate\Support\Facades\Storage;
-
+use App\Models\Genre;
 
 class BookController extends Controller
 {
@@ -17,7 +17,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        return view('books.index')->with('books', Book::all());
+       $books = Book::orderBy('created_at', 'desc')->get();
+        return view('books.index', compact('books'));
     }
 
     /**
@@ -27,7 +28,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('books.create');
+        return view('books.create')->with('genres', Genre::all())->with('authors', Author::all());
     }
 
     /**
@@ -38,13 +39,22 @@ class BookController extends Controller
      */
     public function store(CreateBook $request)
     {
+//        dd($request->all());
+
+
+
         $path = $request->file('cover')->store('covers', 'public');
 
-        Book::create([
+        $book = Book::create([
             'title' => $request->title,
             'description' => $request->description,
-            'cover' => $path
+            'cover' => $path,
+            'genre_id' => $request->genre
         ]);
+
+        if ($request->author) {
+            $book->authors()->attach($request->author);
+        }
 
         session()->flash('successGenre', 'Book created successfully.');
 
@@ -70,7 +80,7 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        return view('books.create')->with('book', $book);
+        return view('books.create')->with('book', $book)->with('genres', Genre::all());
     }
 
     /**
@@ -82,12 +92,13 @@ class BookController extends Controller
      */
     public function update(UpdateBook $request, Book $book)
     {
-        $data = $request->only(['title', 'description']);
+        $data = $request->only(['title', 'description', 'genre_id']);
 
         if ($request->hasFile('cover')) {
-            $cover = $request->cover->store('books');
 
-            Storage::delete($book->cover);
+            $cover = $request->cover->store('covers', 'public');
+
+            $book->deleteCover();
 
             $data['cover'] = $cover;
         }
@@ -110,7 +121,7 @@ class BookController extends Controller
 
         if ($book->trashed()) {
 
-            Storage::delete($book->cover);
+            $book->deleteCover();
 
             $book->forceDelete();
         } else {
@@ -127,5 +138,16 @@ class BookController extends Controller
         $trashed = Book::onlyTrashed()->get();
 
         return view('books.index')->with('books', $trashed);
+    }
+
+    public  function restore($id)
+    {
+        $book = Book::withTrashed()->where('id', $id)->firstOrFail();
+
+        $book->restore();
+
+        session()->flash('successGenre', 'Book restored successfully.');
+
+        return redirect()->back();
     }
 }

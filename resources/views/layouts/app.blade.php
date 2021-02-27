@@ -90,6 +90,9 @@
                                 <a href="{{ route('books.index') }}">Books</a>
                             </li>
                             <li class="list-group-item">
+                                <a href="{{ route('authors.index') }}">Authors</a>
+                            </li>
+                            <li class="list-group-item">
                                 <a href="{{ route('genres.index') }}">Genres</a>
                             </li>
                         </ul>

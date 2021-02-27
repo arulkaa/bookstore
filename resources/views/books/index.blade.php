@@ -18,7 +18,8 @@
                     <thead>
                     <th>Cover</th>
                     <th>Title</th>
-                    <th></th>
+                    <th>Author</th>
+                    <th>Genre</th>
                     <th></th>
                     </thead>
                     <tbody>
@@ -31,9 +32,26 @@
                             <td>
                                 {{ $book->title }}
                             </td>
-                            @if(!$book->trashed())
+                            <td>
+                                {{ $book->author }}
+                            </td>
+                            <td>
+                                <a href="{{ route('genres.edit', $book->genre->id) }}" title="Edit Genre">
+                                    {{ $book->genre->name }}
+                                </a>
+                            </td>
+                            @if($book->trashed())
+                                <form action="{{ route('restore-books', $book->id) }}" method="post">
+                                    @csrf
+                                    @method('put')
+
+                                    <td>
+                                        <button type="submit" class="btn btn-info btn-sm">Restore</button>
+                                    </td>
+                                </form>
+                            @else
                                 <td>
-                                    <a href="{{ route('books.edit', $book->id) }}" class="btn btn-outline-info btn-sm">Edit</a>
+                                    <a href="{{ route('books.edit', $book->id) }}" class="btn btn-info btn-sm">Edit</a>
                                 </td>
                             @endif
                             <td>
@@ -41,7 +59,7 @@
                                     @csrf
                                     @method('delete')
 
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <button type="submit" class="btn btn-danger btn-sm">
                                         {{ $book->trashed() ? 'Delete' : 'Trash' }}
                                     </button>
                                 </form>
